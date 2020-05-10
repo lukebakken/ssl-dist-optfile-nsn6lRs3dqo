@@ -1,0 +1,4 @@
+[submodule "tls-gen"]
+	path = tls-gen
+	url = https://github.com/lukebakken/tls-gen.git
+	branch = lrb-gen-client-cert-only
