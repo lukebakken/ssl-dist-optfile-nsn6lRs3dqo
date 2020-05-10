@@ -18,10 +18,17 @@ Since both nodes are running on the same host and using the same `epmd` process,
 127.0.0.1	localhost	shostakovich    shostakovich2
 ```
 
+## Clone this project
+
+```
+git clone https://github.com/lukebakken/ssl-dist-optfile-nsn6lRs3dqo.git
+cd ssl-dist-optfile-nsn6lRs3dqo
+git submodule update --init
+```
+
 ## Generate certs
 
 ```
-git submodule update --init
 cd tls-gen/basic
 
 make CN=shostakovich
@@ -51,12 +58,6 @@ shostakovich2/rabbitmq-env.conf
 shostakovich2/ssl_dist.config
 ```
 
-## Enable plugins
-
-```
-rabbitmq-plugins enable rabbitmq_peer_discovery_common rabbitmq_management rabbitmq_top
-```
-
 ## "Install" RabbitMQ
 
 I have Erlang in my PATH, and I am using the `generic-unix` archive, extracted locally:
@@ -69,6 +70,17 @@ tar xf rabbitmq-server-generic-unix-3.8.3.tar.xz
 cd rabbitmq_server-3.8.3
 ```
 
+## Enable plugins
+
+```
+cd /path/to/extracted/rabbitmq_server-3.8.3
+
+# Note: this will enable plugins for both nodes, since they will both read the following file:
+# ./etc/rabbitmq/enabled_plugins
+
+./sbin/rabbitmq-plugins enable rabbitmq_peer_discovery_common rabbitmq_management rabbitmq_top
+```
+
 ## Starting the nodes
 
 * `shostakovich`
@@ -76,6 +88,8 @@ cd rabbitmq_server-3.8.3
 In one terminal -
 
 ```
+cd /path/to/extracted/rabbitmq_server-3.8.3
+
 RABBITMQ_CONFIG_FILE="$HOME/issues/rabbitmq-users/ssl-dist-optfile-nsn6lRs3dqo/shostakovich/rabbitmq.conf" \
     RABBITMQ_CONF_ENV_FILE="$HOME/issues/rabbitmq-users/ssl-dist-optfile-nsn6lRs3dqo/shostakovich/rabbitmq-env.conf" \
     RABBITMQ_ALLOW_INPUT=true \
@@ -87,6 +101,8 @@ RABBITMQ_CONFIG_FILE="$HOME/issues/rabbitmq-users/ssl-dist-optfile-nsn6lRs3dqo/s
 In another terminal -
 
 ```
+cd /path/to/extracted/rabbitmq_server-3.8.3
+
 RABBITMQ_CONFIG_FILE="$HOME/issues/rabbitmq-users/ssl-dist-optfile-nsn6lRs3dqo/shostakovich2/rabbitmq.conf" \
     RABBITMQ_CONF_ENV_FILE="$HOME/issues/rabbitmq-users/ssl-dist-optfile-nsn6lRs3dqo/shostakovich2/rabbitmq-env.conf" \
     RABBITMQ_ALLOW_INPUT=true \
@@ -96,7 +112,7 @@ RABBITMQ_CONFIG_FILE="$HOME/issues/rabbitmq-users/ssl-dist-optfile-nsn6lRs3dqo/s
 ## Querying node status
 
 ```
-cd rabbitmq_server-3.8.3
+cd /path/to/extracted/rabbitmq_server-3.8.3
 
 # query as though we're on node shostakovich
 RABBITMQ_CONF_ENV_FILE="$HOME/issues/rabbitmq-users/ssl-dist-optfile-nsn6lRs3dqo/shostakovich/rabbitmq-env.conf" \
@@ -106,4 +122,3 @@ RABBITMQ_CONF_ENV_FILE="$HOME/issues/rabbitmq-users/ssl-dist-optfile-nsn6lRs3dqo
 RABBITMQ_CONF_ENV_FILE="$HOME/issues/rabbitmq-users/ssl-dist-optfile-nsn6lRs3dqo/shostakovich2/rabbitmq-env.conf" \
     ./sbin/rabbitmqctl -n rabbit-2@shostakovich2 status
 ```
-
